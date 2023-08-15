@@ -10,6 +10,7 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +21,7 @@ import java.util.Optional;
 public class CurrencyService {
     private final ExchangeRateClient exchangeRateClient;
     private final TextToJsonObjectConverter converter;
-    private final Map<String, Double> currencyRates = new HashMap<>();
+    private final Map<String, BigDecimal> currencyRates = new HashMap<>();
 
     @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000))
     public CurrencyApiResponse fetchAndSaveCurrencyData() {
