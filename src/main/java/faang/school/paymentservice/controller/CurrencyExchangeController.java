@@ -18,10 +18,9 @@ public class CurrencyExchangeController {
     @GetMapping("/fetch-currency")
     public ResponseEntity<CurrencyApiResponse> fetchCurrencyData() {
         CurrencyApiResponse response = currencyService.fetchAndSaveCurrencyData();
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        } else {
+        if (response == null) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
         }
+        return ResponseEntity.ok(response);
     }
 }

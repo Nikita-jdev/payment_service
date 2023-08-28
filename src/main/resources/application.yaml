@@ -9,3 +9,6 @@ currency:
   rate:
     fetch:
       cron: 0 4 * * * *
+
+cbr:
+  url: https://www.cbr-xml-daily.ru/daily_json.js
