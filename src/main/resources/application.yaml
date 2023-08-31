@@ -12,3 +12,8 @@ currency:
 
 cbr:
   url: https://www.cbr-xml-daily.ru/daily_json.js
+
+retryable:
+  maxAttempts: 2
+  backoff:
+    delay: 2000
