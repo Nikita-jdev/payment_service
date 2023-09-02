@@ -1,6 +1,7 @@
 package faang.school.paymentservice.controller;
 
 import faang.school.paymentservice.dto.exchange.CurrencyApiResponse;
+import faang.school.paymentservice.exception.CurrencyServiceException;
 import faang.school.paymentservice.service.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class CurrencyExchangeController {
     public ResponseEntity<CurrencyApiResponse> fetchCurrencyData() {
         CurrencyApiResponse response = currencyService.fetchAndSaveCurrencyData();
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+            throw new CurrencyServiceException("Failed to fetch currency rates.");
         }
         return ResponseEntity.ok(response);
     }

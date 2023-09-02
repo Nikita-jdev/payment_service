@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import faang.school.paymentservice.exception.CurrencyServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -41,4 +43,11 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleRuntimeException(RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(CurrencyServiceException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleCurrencyServiceException(CurrencyServiceException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 }
