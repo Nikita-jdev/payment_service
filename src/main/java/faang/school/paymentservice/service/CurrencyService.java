@@ -23,7 +23,8 @@ public class CurrencyService {
     private final TextToJsonObjectConverter converter;
     private final Map<String, BigDecimal> currencyRates = new HashMap<>();
 
-    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000))
+
+    @Retryable(maxAttemptsExpression = "${spring.max_attempts}", backoff = @Backoff(delayExpression = "${spring.backoff.initial_interval}"))
     public CurrencyApiResponse fetchAndSaveCurrencyData() {
         String responseText = exchangeRateClient.getLatestCurrencyRates();
         CurrencyApiResponse response;
