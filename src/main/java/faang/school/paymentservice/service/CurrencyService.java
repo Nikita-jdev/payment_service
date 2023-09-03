@@ -39,9 +39,8 @@ public class CurrencyService {
                 .map(CurrencyApiResponse::getValute)
                 .ifPresent(valute -> valute.forEach((currencyCode, currencyData) -> {
                     currencyRates.put(currencyData.getCharCode(), currencyData.getValue());
-                    currencyRates.forEach((key, value) -> log.info(key + ": " + value));
-                    log.info("Currency rates fetched and updated.");
                 }));
+                    log.info("Currency rates fetched and updated.");
 
         if (currencyRates.isEmpty()) {
             log.info("Failed to fetch currency rates.");
