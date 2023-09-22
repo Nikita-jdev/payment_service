@@ -19,9 +19,12 @@ public class AccountNumbersSequence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="type", nullable = false)
-    AccountType accountType;
+    @Column(name = "account_type", nullable = false)
+    private String accountType;
 
     @Column(name="current_number", nullable = false)
     BigInteger currentNumber;
+
+    @Version
+    private Integer version;
 }

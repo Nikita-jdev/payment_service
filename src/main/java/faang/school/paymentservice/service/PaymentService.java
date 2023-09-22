@@ -54,7 +54,6 @@ public class PaymentService {
 
         BigDecimal sum = currentBalance.add(deposit);
 
-        balance.setBalanceVersion(balance.getBalanceVersion() + 1);
         balance.setCurrentBalance(sum);
         balance.setUpdated(ZonedDateTime.now());
 

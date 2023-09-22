@@ -39,6 +39,7 @@ public class Balance {
     @Column(nullable = false)
     private ZonedDateTime updated;
 
+    @Version
     @Column(name="balance_version", nullable = false)
     private Long balanceVersion;
 }
