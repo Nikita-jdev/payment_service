@@ -1,20 +1,26 @@
 package faang.school.paymentservice.controller;
 
-import faang.school.paymentservice.dto.PaymentRequest;
+import faang.school.paymentservice.config.context.UserContext;
+import faang.school.paymentservice.dto.*;
+
 import java.text.DecimalFormat;
 import java.util.Random;
-import faang.school.paymentservice.dto.PaymentResponse;
-import faang.school.paymentservice.dto.PaymentStatus;
+
+import faang.school.paymentservice.model.BalanceAudit;
+import faang.school.paymentservice.service.PaymentService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/payment")
+@Validated
 public class PaymentController {
+    private final PaymentService paymentService;
+    private final UserContext userContext;
 
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse> sendPayment(@RequestBody @Validated PaymentRequest dto) {
@@ -33,5 +39,35 @@ public class PaymentController {
                 dto.currency(),
                 message)
         );
+    }
+
+    @PostMapping("/new-account/{accountNumber}")
+    public AccountDto createAccount(@PathVariable Long accountNumber){
+        return paymentService.createAccount(accountNumber);
+    }
+
+    @GetMapping("/balance/{balanceId}")
+    public BalanceDto getBalance(@PathVariable Long balanceId){
+        return paymentService.getBalance(balanceId);
+    }
+
+    @PutMapping("/balance/{balanceId}")
+    public BalanceDto updateBalance(@Valid UpdateBalanceDto updateBalanceDto){
+        return paymentService.updateBalance(updateBalanceDto);
+    }
+
+    @PostMapping("/create-request")
+    public ResponseEntity<BalanceAudit> createRequestForPayment(@RequestBody @Validated CreatePaymentRequest dto){
+        return ResponseEntity.ok(paymentService.createRequestForPayment(dto, userContext.getUserId()));
+    }
+
+    @PutMapping("cancel-request/{balanceAuditId}")
+    public ResponseEntity<BalanceAudit> cancelRequestForPayment(@PathVariable Long balanceAuditId){
+        return ResponseEntity.ok(paymentService.cancelRequestForPayment(balanceAuditId, userContext.getUserId()));
+    }
+
+    @PutMapping("force-request/{balanceAuditId}")
+    public ResponseEntity<BalanceAudit> forceRequestForPayment(@PathVariable Long balanceAuditId){
+        return ResponseEntity.ok(paymentService.forceRequestForPayment(balanceAuditId, userContext.getUserId()));
     }
 }
