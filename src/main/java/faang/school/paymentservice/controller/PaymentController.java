@@ -3,6 +3,7 @@ package faang.school.paymentservice.controller;
 import faang.school.paymentservice.dto.*;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import faang.school.paymentservice.service.payment.PaymentService;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -46,5 +44,26 @@ public class PaymentController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(paymentService.create(dto));
+    }
+
+    @DeleteMapping("{paymentId}/cancel")
+    public ResponseEntity<PaymentDto> cancelPayment(@PathVariable Long paymentId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(paymentService.cancel(paymentId));
+    }
+
+    @PutMapping("{paymentId}/clear")
+    public ResponseEntity<PaymentDto> clearPayment(@PathVariable Long paymentId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(paymentService.clear(paymentId));
+    }
+
+    @PutMapping("{paymentId}/schedule")
+    public ResponseEntity<PaymentDto> schedulePayment(@PathVariable Long paymentId, @RequestBody LocalDateTime scheduleDate) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(paymentService.schedule(paymentId, scheduleDate));
     }
 }
