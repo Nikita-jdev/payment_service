@@ -40,13 +40,16 @@ public class PaymentService {
     }
 
     public PaymentDto cancel(Long paymentId) {
-        Payment payment = checkPaymentExist(paymentId);
-        payment = cancelPayment(payment);
+        Optional<Payment> optionalPayment = paymentRepository.findById(paymentId);
+        if (optionalPayment.isEmpty()) {
+            throw new EntityNotFoundException("Payment with id %d not found".formatted(paymentId));
+        }
+        Payment payment = cancelPayment(optionalPayment.get());
         log.info("Cancelled payment: {}", payment);
 
         return paymentMapper.toDto(payment);
     }
-
+  
     public PaymentDto clear(Long paymentId) {
          Payment payment = checkPaymentExist(paymentId);
 
@@ -90,7 +93,6 @@ public class PaymentService {
         return paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new EntityNotFoundException("Payment with id %d not found".formatted(paymentId)));
     }
-
     private Payment cancelPayment(Payment payment) {
         payment.setStatus(PaymentStatus.CANCELED);
         if (payment.getScheduledAt() != null) {

@@ -52,7 +52,6 @@ public class PaymentController {
                 .status(HttpStatus.OK)
                 .body(paymentService.cancel(paymentId));
     }
-
     @PutMapping("{paymentId}/clear")
     public ResponseEntity<PaymentDto> clearPayment(@PathVariable Long paymentId) {
         return ResponseEntity
