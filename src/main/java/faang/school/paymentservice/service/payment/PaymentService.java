@@ -12,7 +12,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +28,9 @@ public class PaymentService {
     private final PaymentEventPublisher eventPublisher;
 
     public PaymentDto create(InvoiceDto dto) {
-        Optional<Payment> optionalPayment = getPaymentIfExist(dto);
-        if (optionalPayment.isPresent()) {
-            return paymentMapper.toDto(optionalPayment.get());
+        Payment optionalPayment = getPaymentIfExist(dto);
+        if (optionalPayment != null) {
+            return paymentMapper.toDto(optionalPayment);
         }
 
         Payment payment = createPayment(dto);
@@ -111,14 +110,40 @@ public class PaymentService {
                 .status(PaymentStatus.AUTHORIZATION)
                 .idempotencyKey(dto.getIdempotencyKey())
                 .build();
-
         sendEvent(payment);
         return paymentRepository.save(payment);
     }
 
-    private Optional<Payment> getPaymentIfExist(InvoiceDto dto) {
-        return paymentRepository
-                .findByIdempotencyKey(dto.getIdempotencyKey().toString());
+    private Payment getPaymentIfExist(InvoiceDto dto) {
+        Optional<Payment> optionalPayment = paymentRepository.findByIdempotencyKey(dto.getIdempotencyKey().toString());
+        if (optionalPayment.isEmpty()) {
+            return null;
+        }
+        Payment payment = optionalPayment.get();
+        checkPaymentFields(payment, dto);
+        return payment;
+    }
+
+    private void checkPaymentFields(Payment payment, InvoiceDto dto) {
+        List<RuntimeException> exceptions = new ArrayList<>();
+        if (!payment.getSenderAccount().equals(dto.getSenderAccount())) {
+            exceptions.add(new IllegalArgumentException("Sender account does not match"));
+        }
+        if (!payment.getReceiverAccount().equals(dto.getReceiverAccount())) {
+            exceptions.add(new IllegalArgumentException("Receiver account does not match"));
+        }
+        if (!payment.getCurrency().equals(dto.getCurrency())) {
+            exceptions.add(new IllegalArgumentException("Currency does not match"));
+        }
+        if (!payment.getAmount().equals(dto.getAmount())) {
+            exceptions.add(new IllegalArgumentException("Amount does not match"));
+        }
+        if (exceptions.isEmpty()) {
+            return;
+        }
+        IllegalArgumentException exception = new IllegalArgumentException();
+        exceptions.forEach(exception::addSuppressed);
+        throw exception;
     }
 
     private void sendEvent(Payment payment) {
