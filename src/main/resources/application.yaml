@@ -19,6 +19,10 @@ spring:
       port: 6379
       host: localhost
 
+messaging:
+  topics:
+    payment-topic-name: payment-channel
+
 account-service:
   host: localhost
   port: 8090
@@ -29,3 +33,8 @@ server:
 logging:
   level:
     root: info
+
+scheduling:
+  gather-payment: * * * ? * *
+  payment-scheduler-pool-size: 10
+  payment-scheduler-thread-name-prefix: payment-scheduler-

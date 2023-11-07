@@ -3,15 +3,16 @@ package faang.school.paymentservice.service.payment;
 import faang.school.paymentservice.dto.InvoiceDto;
 import faang.school.paymentservice.dto.PaymentDto;
 import faang.school.paymentservice.dto.PaymentStatus;
+import faang.school.paymentservice.dto.payment.PaymentEvent;
 import faang.school.paymentservice.mapper.PaymentMapper;
+import faang.school.paymentservice.messaging.PaymentEventPublisher;
 import faang.school.paymentservice.model.Payment;
 import faang.school.paymentservice.repository.PaymentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     private final PaymentMapper paymentMapper;
+
+    private final PaymentEventPublisher eventPublisher;
 
     public PaymentDto create(InvoiceDto dto) {
         Payment optionalPayment = getPaymentIfExist(dto);
@@ -46,12 +49,57 @@ public class PaymentService {
 
         return paymentMapper.toDto(payment);
     }
+  
+    public PaymentDto clear(Long paymentId) {
+         Payment payment = checkPaymentExist(paymentId);
 
+         payment = clearPayment(payment);
+         log.info("Payment cleared: {}", payment);
+
+         return paymentMapper.toDto(payment);
+    }
+
+    public void clear(Payment payment) {
+        payment = checkPaymentExist(payment.getId());
+        payment = clearPayment(payment);
+
+        log.info("Payment cleared: {}", payment);
+    }
+
+    public PaymentDto schedule(Long paymentId, LocalDateTime scheduledAt) {
+        Payment payment = checkPaymentExist(paymentId);
+        payment = schedulePayment(payment, scheduledAt);
+
+        return paymentMapper.toDto(payment);
+    }
+
+    public List<Payment> getScheduledPayment() {
+        return paymentRepository.findAllScheduledPayments();
+    }
+
+    private Payment schedulePayment(Payment payment, LocalDateTime scheduledAt) {
+        payment.setScheduledAt(scheduledAt);
+        return paymentRepository.save(payment);
+    }
+
+    private Payment clearPayment(Payment payment) {
+        payment.setStatus(PaymentStatus.CLEARED);
+
+        sendEvent(payment);
+        return paymentRepository.save(payment);
+    }
+
+    private Payment checkPaymentExist(Long paymentId) {
+        return paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new EntityNotFoundException("Payment with id %d not found".formatted(paymentId)));
+    }
     private Payment cancelPayment(Payment payment) {
         payment.setStatus(PaymentStatus.CANCELED);
         if (payment.getScheduledAt() != null) {
             payment.setScheduledAt(null);
         }
+
+        sendEvent(payment);
         return paymentRepository.save(payment);
     }
 
@@ -64,6 +112,7 @@ public class PaymentService {
                 .status(PaymentStatus.AUTHORIZATION)
                 .idempotencyKey(dto.getIdempotencyKey())
                 .build();
+        sendEvent(payment);
         return paymentRepository.save(payment);
     }
 
@@ -97,5 +146,11 @@ public class PaymentService {
         IllegalArgumentException exception = new IllegalArgumentException();
         exceptions.forEach(exception::addSuppressed);
         throw exception;
+    }
+
+    private void sendEvent(Payment payment) {
+        PaymentEvent event = paymentMapper.toEvent(payment);
+        eventPublisher.publish(event);
+        log.info("Sent event: {}", event);
     }
 }

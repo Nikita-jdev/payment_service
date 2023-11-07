@@ -3,6 +3,7 @@ package faang.school.paymentservice.controller;
 import faang.school.paymentservice.dto.*;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 import faang.school.paymentservice.service.payment.PaymentService;
@@ -50,5 +51,18 @@ public class PaymentController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(paymentService.cancel(paymentId));
+    }
+    @PutMapping("{paymentId}/clear")
+    public ResponseEntity<PaymentDto> clearPayment(@PathVariable Long paymentId) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(paymentService.clear(paymentId));
+    }
+
+    @PutMapping("{paymentId}/schedule")
+    public ResponseEntity<PaymentDto> schedulePayment(@PathVariable Long paymentId, @RequestBody LocalDateTime scheduleDate) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(paymentService.schedule(paymentId, scheduleDate));
     }
 }
