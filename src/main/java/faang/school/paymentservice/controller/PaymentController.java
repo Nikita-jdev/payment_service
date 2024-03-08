@@ -27,6 +27,7 @@ public class PaymentController {
     private double paymentFee;
     @Value("${payment.currency}")
     private Currency serviceCurrency;
+
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse> sendPayment(@RequestBody @Validated PaymentRequest dto) {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -48,7 +49,7 @@ public class PaymentController {
         );
     }
 
-    private BigDecimal calculatePayment (BigDecimal amount, Currency userCurrency) {
+    private BigDecimal calculatePayment(BigDecimal amount, Currency userCurrency) {
         BigDecimal exchangeRate = exchangeService.exchange(userCurrency, serviceCurrency);
         return amount
                 .multiply(exchangeRate)
