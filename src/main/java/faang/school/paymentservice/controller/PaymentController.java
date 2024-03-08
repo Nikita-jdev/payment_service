@@ -1,10 +1,18 @@
 package faang.school.paymentservice.controller;
 
+import faang.school.paymentservice.dto.Currency;
 import faang.school.paymentservice.dto.PaymentRequest;
+
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Random;
+
 import faang.school.paymentservice.dto.PaymentResponse;
 import faang.school.paymentservice.dto.PaymentStatus;
+import faang.school.paymentservice.service.ExchangeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.propertyeditors.CurrencyEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class PaymentController {
-
+    private final ExchangeService exchangeService;
+    @Value("${payment.fee}")
+    private double paymentFee;
+    @Value("${payment.currency}")
+    private Currency serviceCurrency;
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse> sendPayment(@RequestBody @Validated PaymentRequest dto) {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -25,13 +38,22 @@ public class PaymentController {
                         "Your payment on %s %s was accepted.",
                 formattedSum, dto.currency().name());
 
+        BigDecimal amount = calculatePayment(dto.amount(), dto.currency());
+
         return ResponseEntity.ok(new PaymentResponse(
                 PaymentStatus.SUCCESS,
                 verificationCode,
                 dto.paymentNumber(),
-                dto.amount(),
+                amount,
                 dto.currency(),
                 message)
         );
+    }
+
+    private BigDecimal calculatePayment (BigDecimal amount, Currency userCurrency) {
+        BigDecimal exchangeRate = exchangeService.exchange(userCurrency, serviceCurrency);
+        return amount
+                .multiply(exchangeRate)
+                .multiply(BigDecimal.valueOf(paymentFee));
     }
 }
