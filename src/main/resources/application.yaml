@@ -5,7 +5,7 @@ payment:
   fee: 0.1
   currency: USD
   exchange-service:
-    api-id: ""
+    api-id: ca800d6c1f28496a9461bd842d20b919
 
 
 logging:

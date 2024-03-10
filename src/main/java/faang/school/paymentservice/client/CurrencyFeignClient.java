@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "currency-service", url = "https://api.openexchangerates.org")
+@FeignClient(name = "currency-service", url = "https://openexchangerates.org")
 public interface CurrencyFeignClient {
     @GetMapping("/api/latest.json")
     CurrencyResponse getLatestRates(
-            @RequestParam("app_id") String appId,
+            @RequestParam(name = "app_id") String appId,
             @RequestParam(required = false) Currency base,
             @RequestParam(required = false) List<Currency> symbols
     );

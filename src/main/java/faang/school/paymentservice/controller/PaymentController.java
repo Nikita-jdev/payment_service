@@ -24,20 +24,20 @@ import java.util.Random;
 public class PaymentController {
     private final ExchangeService exchangeService;
     @Value("${payment.fee}")
-    private double paymentFee;
+    private double paymentFeeRate;
     @Value("${payment.currency}")
     private Currency serviceCurrency;
 
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse> sendPayment(@RequestBody @Validated PaymentRequest dto) {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        String formattedSum = decimalFormat.format(dto.amount());
+        BigDecimal amount = calculatePayment(dto.amount(), dto.currency());
+        String formattedSum = decimalFormat.format(amount);
         int verificationCode = new Random().nextInt(1000, 10000);
         String message = String.format("Dear friend! Thank you for your purchase! " +
                         "Your payment on %s %s was accepted.",
                 formattedSum, dto.currency().name());
 
-        BigDecimal amount = calculatePayment(dto.amount(), dto.currency());
 
         return ResponseEntity.ok(new PaymentResponse(
                 PaymentStatus.SUCCESS,
@@ -50,9 +50,9 @@ public class PaymentController {
     }
 
     private BigDecimal calculatePayment(BigDecimal amount, Currency userCurrency) {
-        BigDecimal exchangeRate = exchangeService.exchange(userCurrency, serviceCurrency);
+        BigDecimal exchangeRate = exchangeService.exchange(serviceCurrency, userCurrency);
         return amount
                 .multiply(exchangeRate)
-                .multiply(BigDecimal.valueOf(paymentFee));
+                .multiply((BigDecimal.valueOf(paymentFeeRate + 1)));
     }
 }
