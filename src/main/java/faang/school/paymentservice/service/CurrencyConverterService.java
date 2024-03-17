@@ -27,7 +27,6 @@ public class CurrencyConverterService {
     @Value("${payment.commission}")
     private double commission;
 
-    @Transactional
     @Async("executorService")
     public void convert() {
         log.info("Starting currency conversion.");
