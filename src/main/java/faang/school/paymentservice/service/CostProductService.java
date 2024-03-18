@@ -22,7 +22,7 @@ public class CostProductService {
     public CostProductDto getCostProduct(long id) {
         CostProduct costProduct = costProductRedisRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cost product not found"));
-        log.info("Cost product found: " + costProduct);
+        log.info("Cost product found: {}", costProduct);
         return costProductMapper.toDto(costProduct);
     }
 
@@ -36,9 +36,9 @@ public class CostProductService {
         boolean exists = costProductRedisRepository.existsByName(costProduct.getName());
         if (!exists) {
             costProductRedisRepository.save(costProduct);
-            log.info("Cost product saved: " + costProduct);
+            log.info("Cost product saved: {}", costProduct);
         } else {
-            log.info("Cost product already exists: " + costProduct);
+            log.info("Cost product already exists: {}", costProduct);
         }
     }
 }

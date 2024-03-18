@@ -41,7 +41,7 @@ public class CurrencyConverterService {
             product.setRub(rub);
             product.setEur(eur);
             costProductRedisRepository.save(product);
-            log.info("Currency conversion completed for product: " + product);
+            log.info("Currency conversion completed for product: {}", product);
         }
     }
 }
