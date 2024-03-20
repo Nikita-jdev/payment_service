@@ -1,6 +1,13 @@
 server:
   port: 9080
 
+payment:
+  fee: 0.1
+  currency: USD
+  exchange-service:
+    api-id: ca800d6c1f28496a9461bd842d20b919
+
+
 logging:
   level:
     root: info
