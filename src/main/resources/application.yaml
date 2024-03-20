@@ -1,3 +1,38 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      channels:
+        create_request_channel:
+          name: create_request_channel
+        dms_channel:
+          name: dms_channel
+
+  scheduler:
+    confirmTransactions:
+      cronExpression: 0 */8 * * *  #Каждые 8 часов
+    clearScheduledAt:
+      hours: 8
+
 server:
   port: 9080
 
