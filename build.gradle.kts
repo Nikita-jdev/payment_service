@@ -17,8 +17,16 @@ dependencies {
      * Spring boot starters
      */
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    implementation("org.springframework.retry:spring-retry:2.0.5")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+
+    /**
+     * Database
+     */
+    implementation("redis.clients:jedis:4.3.2")
 
     /**
      * Utils & Logging
@@ -30,6 +38,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.26")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
+    implementation ("org.json:json:20210307")
 
     /**
      * Tests

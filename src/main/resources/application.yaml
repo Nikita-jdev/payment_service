@@ -1,6 +1,26 @@
+spring:
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
 server:
   port: 9080
 
 logging:
   level:
     root: info
+
+open-exchange-rates:
+  app-id: ca800d6c1f28496a9461bd842d20b919
+
+scheduler:
+  convert:
+    time: "0 0 0 * * *"
+
+payment:
+  commission: 1.01
+  product:
+    premium:
+      name: Premium
+      price_usd: 100
