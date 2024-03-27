@@ -1,10 +1,6 @@
 server:
   port: 9080
 
-logging:
-  level:
-    root: info
-
 services:
   exchange:
     url: https://openexchangerates.org
