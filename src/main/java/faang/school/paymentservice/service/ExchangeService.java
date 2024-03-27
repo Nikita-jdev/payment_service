@@ -73,6 +73,7 @@ public class ExchangeService {
     private BigDecimal getRate(CurrencyRate currencyRate, Currency currency) {
         BigDecimal rate = currencyRate.getRates().get(currency.name());
         if (rate == null) {
+            log.error("Currency rate {} not found", currency.name());
             throw new ServiceInteractionException("Currency rate not found for currency " + currency.name());
         }
         return rate;
