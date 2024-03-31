@@ -1,4 +1,4 @@
-package faang.school.paymentservice.controller;
+package faang.school.paymentservice.handler;
 
 import faang.school.paymentservice.dto.Currency;
 import faang.school.paymentservice.dto.ErrorResponse;
