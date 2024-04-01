@@ -12,4 +12,7 @@ public interface ExchangeServiceClient {
     @GetMapping("${services.exchange.rates-endpoint}")
     CurrencyRate getCurrencyRate(@RequestParam("app_id") String appId,
                                  @RequestParam("symbols") Currency to);
+
+    @GetMapping("${services.exchange.rates-endpoint}")
+    CurrencyRate getAllCurrencyRates(@RequestParam("app_id") String appId);
 }

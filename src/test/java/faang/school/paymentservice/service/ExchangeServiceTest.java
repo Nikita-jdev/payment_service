@@ -5,6 +5,7 @@ import faang.school.paymentservice.dto.Currency;
 import faang.school.paymentservice.dto.CurrencyRate;
 import faang.school.paymentservice.dto.PaymentRequest;
 import faang.school.paymentservice.exception.ServiceInteractionException;
+import faang.school.paymentservice.service.currency.ExchangeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

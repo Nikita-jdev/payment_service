@@ -20,6 +20,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+    implementation("org.springframework.retry:spring-retry:2.0.5")
+
 
     /**
      * Utils & Logging
