@@ -9,4 +9,4 @@ services:
     fee: 1.01
 
 scheduler:
-  currency-fetcher: "@daily"
+  currency-fetcher: "0 0,12 * * *"
