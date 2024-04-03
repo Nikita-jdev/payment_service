@@ -3,6 +3,7 @@ package faang.school.paymentservice.handler;
 import faang.school.paymentservice.dto.Currency;
 import faang.school.paymentservice.dto.ErrorResponse;
 import faang.school.paymentservice.exception.ServiceInteractionException;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -52,6 +53,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleServiceInteractionException(ServiceInteractionException e) {
         log.error("ServiceInteractionException", e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(FeignException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ErrorResponse handleFeignException(FeignException e) {
+        log.error("FeignException", e);
         return new ErrorResponse(e.getMessage());
     }
 }

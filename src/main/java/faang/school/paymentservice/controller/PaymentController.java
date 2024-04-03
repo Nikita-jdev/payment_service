@@ -2,7 +2,7 @@ package faang.school.paymentservice.controller;
 
 import faang.school.paymentservice.dto.PaymentRequest;
 import faang.school.paymentservice.dto.PaymentResponse;
-import faang.school.paymentservice.service.ExchangeService;
+import faang.school.paymentservice.service.currency.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
