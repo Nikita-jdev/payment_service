@@ -23,6 +23,6 @@ public class PaymentController {
 
     @PostMapping("/payment")
     public PaymentResponse sendPayment(@RequestBody @Validated PaymentRequest paymentRequest) {
-        return paymentService.CurrencyExchange(paymentRequest);
+        return paymentService.currencyExchange(paymentRequest);
     }
 }

@@ -25,7 +25,7 @@ public class PaymentService {
     private final BigDecimal commission;
     private Random random;
 
-    public PaymentResponse CurrencyExchange(PaymentRequest paymentRequest) {
+    public PaymentResponse currencyExchange(PaymentRequest paymentRequest) {
         BigDecimal totalAmount = getTotalAmount(paymentRequest);
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
 

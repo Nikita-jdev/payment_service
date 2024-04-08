@@ -33,7 +33,7 @@ class PaymentApplicationTests {
         when(openExchangeRatesClient.getExchangeRates(app_id, Currency.USD)).thenReturn(getExchangeRates());
         PaymentRequest paymentRequest = new PaymentRequest(1, new BigDecimal(40), Currency.USD);
 
-        assertThrows(CurrencyNotFoundException.class, () -> paymentService.CurrencyExchange(paymentRequest));
+        assertThrows(CurrencyNotFoundException.class, () -> paymentService.currencyExchange(paymentRequest));
     }
 
     @Test
@@ -43,7 +43,7 @@ class PaymentApplicationTests {
         when(openExchangeRatesClient.getExchangeRates(app_id, Currency.EUR)).thenReturn(getExchangeRates());
 
         BigDecimal valueExpected = BigDecimal.valueOf(40);
-        assertEquals(valueExpected, paymentService.CurrencyExchange(paymentRequest).amount());
+        assertEquals(valueExpected, paymentService.currencyExchange(paymentRequest).amount());
     }
 
     private ExchangeRates getExchangeRates() {
