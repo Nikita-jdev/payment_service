@@ -19,11 +19,11 @@ public class PaymentService {
     private final OpenExchangeRatesClient openExchangeRatesClient;
 
     @Value("${services.exchange.app_id}")
-    private final String app_id;
+    private String app_id;
 
     @Value("${services.exchange.commission}")
-    private final BigDecimal commission;
-    private Random random;
+    private BigDecimal commission;
+    private Random random = new Random();
 
     public PaymentResponse currencyExchange(PaymentRequest paymentRequest) {
         BigDecimal totalAmount = getTotalAmount(paymentRequest);
