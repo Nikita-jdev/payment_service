@@ -5,10 +5,12 @@ import faang.school.paymentservice.dto.*;
 import faang.school.paymentservice.service.exception.CurrencyNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -18,12 +20,13 @@ import java.util.Random;
 public class PaymentService {
     private final OpenExchangeRatesClient openExchangeRatesClient;
 
-    @Value("${services.exchange.app_id}")
+    @Value("${services.exchange.app-id}")
     private String app_id;
 
     @Value("${services.exchange.commission}")
     private BigDecimal commission;
     private Random random = new Random();
+
 
     public PaymentResponse currencyExchange(PaymentRequest paymentRequest) {
         BigDecimal totalAmount = getTotalAmount(paymentRequest);
@@ -39,7 +42,7 @@ public class PaymentService {
                 PaymentStatus.SUCCESS,
                 verificationCode,
                 paymentRequest.paymentNumber(),
-                totalAmount,
+                totalAmount.setScale(2, RoundingMode.HALF_UP),
                 paymentRequest.currency(),
                 message);
     }
@@ -48,14 +51,14 @@ public class PaymentService {
         Currency currency = paymentRequest.currency();
         ExchangeRates exchangeRatesActual = openExchangeRatesClient.getExchangeRates(app_id, currency);
         BigDecimal rate = getRate(exchangeRatesActual, currency);
-        if (Currency.EUR.equals(currency)) {
+        if (Currency.USD.equals(currency)) {
             log.info("The currency exchange {} was not completed due to the selected currency corresponding to the" +
                     " one being transferred", paymentRequest.paymentNumber());
             return paymentRequest.amount();
         }
         BigDecimal totalAmount = paymentRequest.amount().multiply(commission).multiply(rate);
         log.info("Successful currency exchange, payment number: {}, Currency for exchange: {} , amount received: {}"
-                , paymentRequest.paymentNumber(), paymentRequest.currency().name(), totalAmount);
+                , paymentRequest.paymentNumber(), paymentRequest.currency().name(), totalAmount.setScale(2, RoundingMode.HALF_UP));
         return totalAmount;
     }
 
