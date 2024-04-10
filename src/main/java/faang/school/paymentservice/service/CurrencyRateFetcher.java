@@ -19,10 +19,10 @@ import feign.FeignException;
 public class CurrencyRateFetcher {
     private final OpenExchangeRatesClient openExchangeRatesClient;
 
-    @Value("${services.exchange.app_id}")
-    private final String app_id;
+    @Value("${services.exchange.app-id}")
+    private String app_id;
 
-    @Scheduled(cron = "${services.exchange.Scheduled")
+    @Scheduled(cron = "${services.exchange.scheduled}")
     @Retryable(retryFor = FeignException.class)
     public void getExchangeRates() {
         ExchangeRates exchangeRates = openExchangeRatesClient.getAllExchangeRates(app_id);

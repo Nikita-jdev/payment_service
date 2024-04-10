@@ -19,12 +19,12 @@ public class CurrencyRateFetcherTest {
     @InjectMocks
     private CurrencyRateFetcher currencyRateFetcher;
 
-    @Value("${services.exchange.app_id}")
+    @Value("${services.exchange.app-id}")
     private String app_id;
 
     @Test
-    public void gettingTheExchangeRateValidTest(){
+    public void gettingTheExchangeRateValidTest() {
         currencyRateFetcher.getExchangeRates();
-        verify(openExchangeRatesClient,times(1)).getAllExchangeRates(app_id);
+        verify(openExchangeRatesClient, times(1)).getAllExchangeRates(app_id);
     }
 }
