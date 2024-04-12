@@ -7,6 +7,13 @@ services:
     app-id: ca800d6c1f28496a9461bd842d20b919
     scheduled: '0 0 * * * *'
 
+services:
+  exchange:
+    url: https://openexchangerates.org
+    rates-endpoint: /api/latest.json
+    app-id: ca800d6c1f28496a9461bd842d20b919
+    commission: 1.01
+
 logging:
   level:
     root: info
