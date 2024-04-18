@@ -1,5 +1,11 @@
 server:
   port: 9080
+services:
+  exchange:
+    url: https://openexchangerates.org
+    rates: /api/latest.json
+    app-id: ca800d6c1f28496a9461bd842d20b919
+    scheduled: '0 0 * * * *'
 
 services:
   exchange:

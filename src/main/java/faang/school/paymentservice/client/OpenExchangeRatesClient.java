@@ -11,4 +11,7 @@ public interface OpenExchangeRatesClient {
     @GetMapping("${services.exchange.rates-endpoint}")
     ExchangeRates getExchangeRates(@RequestParam("app_id") String appId,
                                    @RequestParam("symbols") Currency to);
+
+    @GetMapping("${services.exchange.rates-endpoint}")
+    ExchangeRates getAllExchangeRates(@RequestParam("app_id") String appId);
 }
