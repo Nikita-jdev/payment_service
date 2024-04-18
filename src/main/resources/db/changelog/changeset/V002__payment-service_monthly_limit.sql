@@ -1,0 +1,8 @@
+CREATE TABLE monthly_limit (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    expense_category VARCHAR(16) NOT NULL,
+    amount DECIMAL(15, 2) DEFAULT 1000 NOT NULL,
+    currency VARCHAR(8) DEFAULT 'USD' NOT NULL,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL
+);
