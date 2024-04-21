@@ -1,5 +1,6 @@
 CREATE TABLE monthly_limit (
     id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    account_number VARCHAR(64) NOT NULL,
     expense_category VARCHAR(16) NOT NULL,
     amount DECIMAL(15, 2) DEFAULT 1000 NOT NULL,
     currency VARCHAR(8) DEFAULT 'USD' NOT NULL,

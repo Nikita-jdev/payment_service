@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/drop.sql
+  - include:
+      file: db/changelog/changeset/V002__payment-service_monthly_limit.sql
+  - include:
+      file: db/changelog/changeset/V001__payment-service_transaction.sql
+  - include:
+      file: db/changelog/changeset/V003__payment-service_exchange_rate.sql
